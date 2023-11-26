@@ -1,5 +1,4 @@
 ﻿using ElectDisciplines_API.Data;
-using ElectDisciplines_API.Logging;
 using ElectDisciplines_API.Models;
 using ElectDisciplines_API.Models.Dto;
 using Microsoft.AspNetCore.Http;
@@ -12,17 +11,16 @@ namespace ElectDisciplines_API.Controllers
     [ApiController]
     public class DisciplinesAPIController : ControllerBase
     {
-        private readonly ILogging _logger;
 
-        public DisciplinesAPIController(ILogging logger)
+        public DisciplinesAPIController()
         {
-            _logger = logger;
+            
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<DisciplineDTO>> GetDisciplines()
         {
-            _logger.Log("Увесь список дисциплiн", "");
+          
             return Ok(DisciplineStore.disciplineList);
         }
 
@@ -33,7 +31,7 @@ namespace ElectDisciplines_API.Controllers
         //[ProducesResponseType(200, Type = typeof(DisciplineDTO))]
         public ActionResult<DisciplineDTO> GetDiscipline(int id)
         {
-            if (id == 0) { _logger.Log("Get Discipline Error with Id" + id, "error"); return BadRequest(); }
+            if (id == 0) {  return BadRequest(); }
 
             var discipline = DisciplineStore.disciplineList.FirstOrDefault(u => u.Id == id);
 
