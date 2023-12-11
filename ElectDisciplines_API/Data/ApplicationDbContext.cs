@@ -12,6 +12,7 @@ namespace ElectDisciplines_API.Data
         }
 
         public DbSet<Discipline> Disciplines { get; set; }
+        public DbSet<DisciplineNumber> DisciplineNumbers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,7 +24,9 @@ namespace ElectDisciplines_API.Data
                                    Description = "",
                                    Course = 2,
                                    Teacher = "Іванов І.П.",
-                                   ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png"
+                                   Rate = 9,
+                                   ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
+                                   CreatedDate = DateTime.Now
                                },
                              new Discipline()
                              {
@@ -32,7 +35,9 @@ namespace ElectDisciplines_API.Data
                                  Description = "Предмет навчальної дисципліни – закономірності стосунків та поведінки людей у конфліктних ситуаціях, причини виникнення конфліктів і методи їх подолання.",
                                  Course = 2,
                                  Teacher = "Петрова О.А.",
-                                 ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png"
+                                 Rate = 7.2,
+                                 ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
+                                 CreatedDate = DateTime.Now
                              },
                             new Discipline()
                             {
@@ -41,7 +46,9 @@ namespace ElectDisciplines_API.Data
                                 Description = "футбол, волейбол, баксетбол, теніс, настільний теніс",
                                 Course = 2,
                                 Teacher = "Сидоренко С.В.",
-                                ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png"
+                                Rate = 8,
+                                ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
+                                CreatedDate = DateTime.Now
                             },
                            new Discipline()
                            {
@@ -50,7 +57,9 @@ namespace ElectDisciplines_API.Data
                                Description = "Даний курс орієнтований на вивчення Java як людьми з мінімальним рівнем знання програмування так і людьми, які хочуть покращити свої знання з певних нюансів мови. Після його завершення ви зможете писати програми на Java, і будете мати основу, необхідну для подальшого поглиблення своїх знань та навичок в програмуванні.",
                                Course = 3,
                                Teacher = "Коваленко Л.М.",
-                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png"
+                               Rate =  9.3,
+                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
+                               CreatedDate = DateTime.Now
                            },
                            new Discipline()
                            {
@@ -59,7 +68,9 @@ namespace ElectDisciplines_API.Data
                                Description = "Навчальна та робоча програми дисципліни, Силабус, РСО, контрольні завдання, методичні рекомендації до виконання комп’ютерного практикуму. Навчальний посібник «CAD-системи та мультимедіа».   ",
                                Course = 3,
                                Teacher = "Мельник І.І.",
-                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png"
+                               Rate = 9,
+                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
+                               CreatedDate = DateTime.Now
                            },
                            new Discipline()
                            {
@@ -68,7 +79,9 @@ namespace ElectDisciplines_API.Data
                                Description = "Працювати з системою, використовуючи командний рядок Shell;  управляти файлами, каталогами, правами доступу, користувачами та групами, процесами, журналюванням  операцій в Linux; конфігурувати систему через налаштування пакетів, апаратного забезпечення, файлових систем, графічного середовища, мереж",
                                Course = 3,
                                Teacher = "Захарчук Г.С.",
-                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png"
+                               Rate = 10,
+                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
+                               CreatedDate = DateTime.Now
                            },
                            new Discipline()
                            {
@@ -77,7 +90,9 @@ namespace ElectDisciplines_API.Data
                                Description = "Програма курсу передбачає:\r\n\r\nвивчення архітектури платформи Android\r\nрозробку нативних додатків на мові Java\r\nроботу з файловою системою та базами даних SQLite\r\nдоступ до глобальної мережі та розробки веб-додатку\r\nопанування роботи з датчиками та мультимедіа",
                                Course = 3,
                                Teacher = "Кузьменко К.О.",
-                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png"
+                               Rate = 10,
+                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
+                               CreatedDate = DateTime.Now
                            },
                            new Discipline()
                            {
@@ -86,7 +101,9 @@ namespace ElectDisciplines_API.Data
                                Description = "",
                                Course = 3,
                                Teacher = "Григорчук Т.І.",
-                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png"
+                               Rate = 5.5,
+                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
+                               CreatedDate = DateTime.Now
                            },
                            new Discipline()
                            {
@@ -95,7 +112,9 @@ namespace ElectDisciplines_API.Data
                                Description = "розробка систем управління автономними мобільними роботами та дронами;\r\nвирішення задач навігації та локалізації для інших безпілотних систем.",
                                Course = 3,
                                Teacher = "Шевченко О.Г.",
-                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png"
+                               Rate = 7,
+                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
+                               CreatedDate = DateTime.Now
                            },
                            new Discipline()
                            {
@@ -104,7 +123,9 @@ namespace ElectDisciplines_API.Data
                                Description = "",
                                Course = 3,
                                Teacher = "Лисенко Н.В.",
-                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png"
+                               Rate = 9.4,
+                               ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
+                               CreatedDate = DateTime.Now
                            });
         }
     }

@@ -1,9 +1,14 @@
-﻿using ElectDisciplines_API.Data;
+﻿using AutoMapper;
+using ElectDisciplines_API.Data;
 using ElectDisciplines_API.Models;
 using ElectDisciplines_API.Models.Dto;
+using ElectDisciplines_API.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace ElectDisciplines_API.Controllers
 {
@@ -11,17 +16,33 @@ namespace ElectDisciplines_API.Controllers
     [ApiController]
     public class DisciplinesAPIController : ControllerBase
     {
+        protected APIResponse _responce;
+        private readonly IDisciplineRepository _dbDiscipline;
+        private readonly IMapper _mapper;
 
-        public DisciplinesAPIController()
+        public DisciplinesAPIController(IDisciplineRepository dbDiscipline, IMapper mapper)
         {
-            
+            _dbDiscipline = dbDiscipline;
+            _mapper = mapper;
+            this._responce = new();
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<DisciplineDTO>> GetDisciplines()
+        public async Task<ActionResult<APIResponse>> GetDisciplines()
         {
-          
-            return Ok(DisciplineStore.disciplineList);
+            try
+            {
+                IEnumerable<Discipline> disciplineList = await _dbDiscipline.GetAllAsync();
+                _responce.Result = _mapper.Map<List<DisciplineDTO>>(disciplineList);
+                _responce.StatusCode = HttpStatusCode.OK;
+                return Ok(_responce);
+            }
+            catch (Exception ex)
+            {
+                _responce.IsSuccess = false;
+                _responce.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+            return _responce;
         }
 
         [HttpGet("{id:int}", Name = "GetDiscipline")]
@@ -29,77 +50,129 @@ namespace ElectDisciplines_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         //[ProducesResponseType(200, Type = typeof(DisciplineDTO))]
-        public ActionResult<DisciplineDTO> GetDiscipline(int id)
+        public async Task<ActionResult<APIResponse>> GetDiscipline(int id)
         {
-            if (id == 0) {  return BadRequest(); }
+            try
+            {
+                _responce.StatusCode = HttpStatusCode.BadRequest;
+                if (id == 0) { return BadRequest(_responce); }
 
-            var discipline = DisciplineStore.disciplineList.FirstOrDefault(u => u.Id == id);
+                var discipline = await _dbDiscipline.GetAsync(u => u.Id == id);
 
-            if (discipline == null) { return NotFound(); }
-
-            return Ok(discipline);
+                if (discipline == null) { _responce.StatusCode = HttpStatusCode.NotFound; return NotFound(_responce); }
+                _responce.Result = _mapper.Map<DisciplineDTO>(discipline);
+                _responce.StatusCode = HttpStatusCode.OK;
+                return Ok(_responce);
+            }
+            catch (Exception ex)
+            {
+                _responce.IsSuccess = false;
+                _responce.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+            return _responce;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<DisciplineDTO> CreateDiscipline([FromBody]DisciplineDTO disciplineDTO)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<APIResponse>> CreateDiscipline([FromBody] DisciplineCreateDTO createDTO)
         {
-            //if(!ModelState.IsValid) { return BadRequest(ModelState); }
-            if (DisciplineStore.disciplineList.FirstOrDefault(u => u.Name.ToLower() == disciplineDTO.Name.ToLower())!=null) 
+            try
             {
-                ModelState.AddModelError("CustomError", "Така дисциплiна вже iснує!");
-                return BadRequest(ModelState);
-            }
-            if(disciplineDTO == null) { return BadRequest(disciplineDTO); }
-            if(disciplineDTO.Id > 0) {return StatusCode(StatusCodes.Status500InternalServerError); } //якщо створюємо з айді яке більше нуля, то ми нас правді не створюємо
+                //if(!ModelState.IsValid) { return BadRequest(ModelState); }
+                if (await _dbDiscipline.GetAsync(u => u.Name.ToLower() == createDTO.Name.ToLower()) != null)
+                {
+                    ModelState.AddModelError("CustomError", "Така дисциплiна вже iснує!");
+                    return BadRequest(ModelState);
+                }
+                if (createDTO == null) { return BadRequest(createDTO); }
+                //if(disciplineDTO.Id > 0) {return StatusCode(StatusCodes.Status500InternalServerError); } //якщо створюємо з айді яке більше нуля, то ми нас правді не створюємо
+                Discipline discipline = _mapper.Map<Discipline>(createDTO);
 
-            disciplineDTO.Id = DisciplineStore.disciplineList.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
-            DisciplineStore.disciplineList.Add(disciplineDTO);
-        
-            return CreatedAtRoute("GetDiscipline",new {id = disciplineDTO.Id} ,disciplineDTO);
+
+                await _dbDiscipline.CreateAsync(discipline);
+                _responce.Result = _mapper.Map<DisciplineDTO>(discipline);
+                _responce.StatusCode = HttpStatusCode.Created;
+                return CreatedAtRoute("GetDiscipline", new { id = discipline.Id }, _responce);
+            }
+            catch (Exception ex)
+            {
+                _responce.IsSuccess = false;
+                _responce.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+            return _responce;
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("{id:int}", Name = "DeleteDiscipline")]
-        public IActionResult DeleteDiscipline(int id)
+        public async Task<ActionResult<APIResponse>> DeleteDiscipline(int id)
         {
-            if(id==0) { return BadRequest(); }
+            try
+            {
+                if (id == 0) { return BadRequest(); }
 
-            var discipline = DisciplineStore.disciplineList.FirstOrDefault(u => u.Id == id);
-            if(discipline == null) { return NotFound(); }
-            DisciplineStore.disciplineList.Remove(discipline);
-            return NoContent();
+                var discipline = await _dbDiscipline.GetAsync(u => u.Id == id);
+                if (discipline == null) { return NotFound(); }
+
+                await _dbDiscipline.RemoveAsync(discipline);
+
+                _responce.StatusCode = HttpStatusCode.NoContent;
+                _responce.IsSuccess = true;
+                return Ok(_responce);
+            }
+            catch (Exception ex)
+            {
+                _responce.IsSuccess = false;
+                _responce.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+            return _responce;
         }
 
         [HttpPut("{id:int}", Name = "UpdateDiscipline")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateDiscipline(int id, [FromBody]DisciplineDTO disciplineDTO)
+        public async Task<ActionResult<APIResponse>> UpdateDiscipline(int id, [FromBody] DisciplineUpdateDTO updateDTO)
         {
-            if (disciplineDTO== null || id != disciplineDTO.Id) {  return BadRequest(); }
-            var discipline = DisciplineStore.disciplineList.FirstOrDefault(u => u.Id == id);
-            discipline.Name = disciplineDTO.Name;
-            discipline.Description = disciplineDTO.Description;
-            discipline.Teacher = disciplineDTO.Teacher;
+            try
+            {
+                if (updateDTO == null || id != updateDTO.Id) { return BadRequest(); }
 
-            return NoContent();
+                Discipline model = _mapper.Map<Discipline>(updateDTO);
+                await _dbDiscipline.UpdateAsync(model);
+                _responce.StatusCode = HttpStatusCode.NoContent;
+                _responce.IsSuccess = true;
+                return Ok(_responce);
+            }
+            catch (Exception ex)
+            {
+                _responce.IsSuccess = false;
+                _responce.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+            return _responce;
         }
 
         [HttpPatch("{id:int}", Name = "UpdatePartialDiscipline")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdatePartialDiscipline(int id, JsonPatchDocument<DisciplineDTO> patchDTO)
+        public async Task<IActionResult> UpdatePartialDiscipline(int id, JsonPatchDocument<DisciplineUpdateDTO> patchDTO)
         {
-            if(patchDTO==null || id == 0) { return BadRequest(); }
-            var discipline = DisciplineStore.disciplineList.FirstOrDefault(u => u.Id == id);
-            if(discipline == null) {  return BadRequest(); }
-            patchDTO.ApplyTo(discipline, ModelState);
-            if (!ModelState.IsValid) {  return BadRequest(ModelState); }
-            return NoContent() ;
+            if (patchDTO == null || id == 0) { return BadRequest(); }
+            var discipline = await _dbDiscipline.GetAsync(u => u.Id == id, tracked: false);
+
+            DisciplineUpdateDTO disciplineDTO = _mapper.Map<DisciplineUpdateDTO>(discipline);
+
+
+
+            if (discipline == null) { return BadRequest(); }
+            patchDTO.ApplyTo(disciplineDTO, ModelState);
+            Discipline model = _mapper.Map<Discipline>(disciplineDTO);
+
+            await _dbDiscipline.UpdateAsync(model);
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+            return NoContent();
         }
 
 
