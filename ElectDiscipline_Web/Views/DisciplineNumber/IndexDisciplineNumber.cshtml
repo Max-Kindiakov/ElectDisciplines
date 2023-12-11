@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ElectDiscipline_Web.Models.Dto.DisciplineNumberDTO>
+<br />
+<div class="container p-4 border">
+	<div class="row pb-2">
+		<div class="col">
+			<h1 class="text-primary">Discipline Number List</h1>
+		</div>
+		<div class="col text-end pt-1">
+			<a asp-controller="DisciplineNumber" asp-action="CreateDisciplineNumber" class="btn btn-outline-primary"><i class="bi bi-plus-square-fill"></i> Create New Discipline Number</a>
+		</div>
+	</div>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					Discipline Name
+				</th>
+				<th>
+					Discipline Number
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.Discipline.Name</td>
+					<td>@item.DisciplineNo</td>
+					<td>
+						<a asp-controller="DisciplineNumber" asp-action="UpdateDisciplineNumber" asp-route-disciplineNo="@item.DisciplineNo" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+						<a asp-controller="DisciplineNumber" asp-action="DeleteDisciplineNumber" asp-route-disciplineNo="@item.DisciplineNo" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+</div>

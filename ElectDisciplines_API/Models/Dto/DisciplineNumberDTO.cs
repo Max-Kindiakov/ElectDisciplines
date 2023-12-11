@@ -9,6 +9,7 @@ namespace ElectDisciplines_API.Models.Dto
         [Required]
         public int DisciplineId { get; set; }
         public string SpecialDetails { get; set; }
+        public DisciplineDTO Discipline { get; set; }
         
     }
 }

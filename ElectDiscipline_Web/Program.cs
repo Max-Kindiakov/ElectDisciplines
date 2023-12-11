@@ -11,6 +11,9 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpClient<IDisciplineService,DisciplineService>();
 builder.Services.AddScoped<IDisciplineService, DisciplineService>();
 
+builder.Services.AddHttpClient<IDisciplineNumberService, DisciplineNumberService>();
+builder.Services.AddScoped<IDisciplineNumberService, DisciplineNumberService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -34,7 +34,7 @@ namespace ElectDisciplines_API.Controllers
         {
             try
             {
-                IEnumerable<DisciplineNumber> disciplineNumberList = await _dbDisciplineNumber.GetAllAsync();
+                IEnumerable<DisciplineNumber> disciplineNumberList = await _dbDisciplineNumber.GetAllAsync(includeProperties: "Discipline");
                 _responce.Result = _mapper.Map<List<DisciplineNumberDTO>>(disciplineNumberList);
                 _responce.StatusCode = HttpStatusCode.OK;
                 return Ok(_responce);
