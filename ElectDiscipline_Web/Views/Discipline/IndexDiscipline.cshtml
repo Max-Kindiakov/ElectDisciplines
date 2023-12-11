@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ElectDiscipline_Web.Models.Dto.DisciplineDTO>
+<br />
+<div class="container p-4 border">
+	<div class="row pb-2">
+		<div class="col">
+			<h1 class="text-primary">Discipline List</h1>
+		</div>
+		<div class="col text-end pt-1">
+			<a asp-controller="Discipline" asp-action="CreateDiscipline" class="btn btn-outline-primary"><i class="bi bi-plus-square-fill"></i> Створити нову дисципліну</a>
+		</div>
+	</div>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					Назва
+				</th>
+				<th>
+					Викладач
+				</th>
+				<th>
+					Рейтинг
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.Name</td>
+					<td>@item.Teacher</td>
+					<td>@((item.Rate).ToString())</td>
+					<td>
+						<a asp-controller="Discipline" asp-action="UpdateDiscipline" asp-route-disciplineId="@item.Id" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+						<a asp-controller="Discipline" asp-action="DeleteDiscipline" asp-route-disciplineId="@item.Id" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+</div>
