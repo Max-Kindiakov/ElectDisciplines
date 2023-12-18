@@ -83,7 +83,7 @@ namespace ElectDiscipline_Web.Controllers
             return View(model);
         }
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> DeleteVilla(int disciplineId)
+        public async Task<IActionResult> DeleteDiscipline(int disciplineId)
         {
             var response = await _disciplineService.GetAsync<APIResponse>(disciplineId, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)

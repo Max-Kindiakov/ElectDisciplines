@@ -2,6 +2,7 @@
 using ElectDiscipline_Utility;
 using ElectDiscipline_Web.Models;
 using ElectDiscipline_Web.Models.Dto;
+using ElectDiscipline_Web.Models.VM;
 using ElectDiscipline_Web.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,7 @@ namespace ElectDiscipline_Web.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateDisciplineNumber()
         {
-            DisciplineNumberCreateVM disciplineNumberVM = new();
+            DicsiplineNumberCreateVM disciplineNumberVM = new();
             var response = await _disciplineService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
@@ -52,7 +53,7 @@ namespace ElectDiscipline_Web.Controllers
         [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateDisciplineNumber(DisciplineNumberCreateVM model)
+        public async Task<IActionResult> CreateDisciplineNumber(DicsiplineNumberCreateVM model)
         {
             if (ModelState.IsValid)
             {

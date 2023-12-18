@@ -11,6 +11,7 @@ namespace ElectDisciplines_API.Data
             
         }
 
+        public DbSet<LocalUser> LocalUsers { get; set; }
         public DbSet<Discipline> Disciplines { get; set; }
         public DbSet<DisciplineNumber> DisciplineNumbers { get; set; }
 
