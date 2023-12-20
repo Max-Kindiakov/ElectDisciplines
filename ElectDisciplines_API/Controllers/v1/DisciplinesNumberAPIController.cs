@@ -3,6 +3,7 @@ using ElectDisciplines_API.Data;
 using ElectDisciplines_API.Models;
 using ElectDisciplines_API.Models.Dto;
 using ElectDisciplines_API.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
@@ -10,10 +11,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
-namespace ElectDisciplines_API.Controllers
+namespace ElectDisciplines_API.Controllers.v1
 {
-    [Route("api/DisciplinesNumberAPI")]
+    [Route("api/v{version:apiVersion}/DisciplinesNumberAPI")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class DisciplinesNumberAPIController : ControllerBase
     {
         protected APIResponse _responce;
@@ -25,7 +27,7 @@ namespace ElectDisciplines_API.Controllers
         {
             _dbDisciplineNumber = dbDisciplineNumber;
             _mapper = mapper;
-            this._responce = new();
+            _responce = new();
             _dbDiscipline = dbDiscipline;
         }
 
@@ -72,7 +74,7 @@ namespace ElectDisciplines_API.Controllers
             }
             return _responce;
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -87,7 +89,7 @@ namespace ElectDisciplines_API.Controllers
                     ModelState.AddModelError("CustomError", "Такий номер дисциплiни вже iснує!");
                     return BadRequest(ModelState);
                 }
-                if(await _dbDiscipline.GetAsync(u => u.Id == createDTO.DisciplineId) == null)
+                if (await _dbDiscipline.GetAsync(u => u.Id == createDTO.DisciplineId) == null)
                 {
                     ModelState.AddModelError("CustomError", "Айді дисциплiни недійсне!");
                     return BadRequest(ModelState);
@@ -110,7 +112,7 @@ namespace ElectDisciplines_API.Controllers
             }
             return _responce;
         }
-
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -137,7 +139,7 @@ namespace ElectDisciplines_API.Controllers
             }
             return _responce;
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPut("{id:int}", Name = "UpdateDisciplineNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

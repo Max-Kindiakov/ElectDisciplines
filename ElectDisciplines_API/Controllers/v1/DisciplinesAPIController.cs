@@ -3,6 +3,7 @@ using ElectDisciplines_API.Data;
 using ElectDisciplines_API.Models;
 using ElectDisciplines_API.Models.Dto;
 using ElectDisciplines_API.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
@@ -10,10 +11,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
-namespace ElectDisciplines_API.Controllers
+namespace ElectDisciplines_API.Controllers.v1
 {
-    [Route("api/DisciplinesAPI")]
+    [Route("api/v{version:apiVersion}/DisciplineAPI")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class DisciplinesAPIController : ControllerBase
     {
         protected APIResponse _responce;
@@ -24,7 +26,7 @@ namespace ElectDisciplines_API.Controllers
         {
             _dbDiscipline = dbDiscipline;
             _mapper = mapper;
-            this._responce = new();
+            _responce = new();
         }
 
         [HttpGet]
@@ -73,6 +75,7 @@ namespace ElectDisciplines_API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -108,6 +111,7 @@ namespace ElectDisciplines_API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("{id:int}", Name = "DeleteDiscipline")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<APIResponse>> DeleteDiscipline(int id)
         {
             try
@@ -130,7 +134,7 @@ namespace ElectDisciplines_API.Controllers
             }
             return _responce;
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPut("{id:int}", Name = "UpdateDiscipline")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -1,6 +1,8 @@
-﻿namespace ElectDisciplines_API.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace ElectDisciplines_API.Models
 {
-    public class ApplicationUser
+    public class ApplicationUser : IdentityUser
     {
         public string Name { get; set; }
     }

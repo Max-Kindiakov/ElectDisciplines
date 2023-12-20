@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ElectDisciplines_API.Data;
-using ElectDisciplines_API.Models;
 using ElectDisciplines_API.Models.Dto;
+using ElectDisciplines_API.Models;
 using ElectDisciplines_API.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -11,7 +11,7 @@ using System.Text;
 
 namespace ElectDisciplines_API.Repository
 {
-    public class UserRepository : IUserReposetory
+    public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -28,6 +28,7 @@ namespace ElectDisciplines_API.Repository
             secretKey = configuration.GetValue<string>("ApiSettings:Secret");
             _roleManager = roleManager;
         }
+
         public bool IsUniqueUser(string username)
         {
             var user = _db.ApplicationUsers.FirstOrDefault(x => x.UserName == username);
@@ -38,7 +39,7 @@ namespace ElectDisciplines_API.Repository
             return false;
         }
 
-        public Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
+        public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
             var user = _db.ApplicationUsers
                 .FirstOrDefault(u => u.UserName.ToLower() == loginRequestDTO.UserName.ToLower());
@@ -81,7 +82,7 @@ namespace ElectDisciplines_API.Repository
             return loginResponseDTO;
         }
 
-        public Task<UserDTO> Register(RegistrationRequestDTO registerationRequestDTO)
+        public async Task<UserDTO> Register(RegistrationRequestDTO registerationRequestDTO)
         {
             ApplicationUser user = new()
             {

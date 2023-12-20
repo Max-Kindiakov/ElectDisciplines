@@ -13,9 +13,11 @@ namespace ElectDisciplines_API
             CreateMap<Discipline, DisciplineCreateDTO>().ReverseMap();
             CreateMap<Discipline, DisciplineUpdateDTO>().ReverseMap();
 
+
             CreateMap<DisciplineNumber, DisciplineNumberDTO>().ReverseMap();
             CreateMap<DisciplineNumber, DisciplineNumberCreateDTO>().ReverseMap();
             CreateMap<DisciplineNumber, DisciplineNumberUpdateDTO>().ReverseMap();
+            CreateMap<ApplicationUser, UserDTO>().ReverseMap();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace ElectDiscipline_Web.Services
                 ApiType = SD.ApiType.POST,
                 Data = dto,
                 Url = disciplineUrl + "/api/v1/disciplinesNumberAPI",
-                //Token = token
+                Token = token
             });
         }
 
@@ -34,7 +34,7 @@ namespace ElectDiscipline_Web.Services
             {
                 ApiType = SD.ApiType.DELETE,
                 Url = disciplineUrl + "/api/v1/disciplinesNumberAPI/" + id,
-                //Token = token
+                Token = token
             });
         }
 
@@ -44,7 +44,7 @@ namespace ElectDiscipline_Web.Services
             {
                 ApiType = SD.ApiType.GET,
                 Url = disciplineUrl + "/api/v1/disciplinesNumberAPI",
-                //Token = token
+                Token = token
             });
         }
 
@@ -54,7 +54,7 @@ namespace ElectDiscipline_Web.Services
             {
                 ApiType = SD.ApiType.GET,
                 Url = disciplineUrl + "/api/v1/disciplinesNumberAPI/" + id,
-                //Token = token
+                Token = token
             });
         }
 
@@ -65,7 +65,7 @@ namespace ElectDiscipline_Web.Services
                 ApiType = SD.ApiType.PUT,
                 Data = dto,
                 Url = disciplineUrl + "/api/v1/disciplinesNumberAPI/" + dto.DisciplineNo,
-                //Token = token
+                Token = token
             });
         }
     }
