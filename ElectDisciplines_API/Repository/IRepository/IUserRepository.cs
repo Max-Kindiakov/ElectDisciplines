@@ -6,6 +6,6 @@ namespace ElectDisciplines_API.Repository.IRepository
     {
         bool IsUniqueUser(string username);
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
-        Task<UserDTO> Register(RegistrationRequestDTO registerationRequestDTO);
+        Task<UserDTO> Register(RegistrationRequestDTO registrationRequestDTO);
     }
 }

@@ -56,7 +56,7 @@ namespace ElectDisciplines_API.Repository
                 };
             }
 
-            //if user was found generate JWT Token
+            //якщо користувача знайдено, генеруємо токен JWT
             var roles = await _userManager.GetRolesAsync(user);
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(secretKey);
@@ -82,19 +82,19 @@ namespace ElectDisciplines_API.Repository
             return loginResponseDTO;
         }
 
-        public async Task<UserDTO> Register(RegistrationRequestDTO registerationRequestDTO)
+        public async Task<UserDTO> Register(RegistrationRequestDTO registrationRequestDTO)
         {
             ApplicationUser user = new()
             {
-                UserName = registerationRequestDTO.UserName,
-                Email = registerationRequestDTO.UserName,
-                NormalizedEmail = registerationRequestDTO.UserName.ToUpper(),
-                Name = registerationRequestDTO.Name
+                UserName = registrationRequestDTO.UserName,
+                Email = registrationRequestDTO.UserName,
+                NormalizedEmail = registrationRequestDTO.UserName.ToUpper(),
+                Name = registrationRequestDTO.Name
             };
 
             try
             {
-                var result = await _userManager.CreateAsync(user, registerationRequestDTO.Password);
+                var result = await _userManager.CreateAsync(user, registrationRequestDTO.Password);
                 if (result.Succeeded)
                 {
                     if (!_roleManager.RoleExistsAsync("admin").GetAwaiter().GetResult())
@@ -104,7 +104,7 @@ namespace ElectDisciplines_API.Repository
                     }
                     await _userManager.AddToRoleAsync(user, "admin");
                     var userToReturn = _db.ApplicationUsers
-                        .FirstOrDefault(u => u.UserName == registerationRequestDTO.UserName);
+                        .FirstOrDefault(u => u.UserName == registrationRequestDTO.UserName);
                     return _mapper.Map<UserDTO>(userToReturn);
 
                 }

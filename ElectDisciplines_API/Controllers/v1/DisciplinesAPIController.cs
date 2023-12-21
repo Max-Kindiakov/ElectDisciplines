@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using ElectDisciplines_API.Data;
 using ElectDisciplines_API.Models;
 using ElectDisciplines_API.Models.Dto;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Text.Json;
 
 namespace ElectDisciplines_API.Controllers.v1
 {
@@ -18,7 +20,7 @@ namespace ElectDisciplines_API.Controllers.v1
     [ApiVersion("1.0")]
     public class DisciplinesAPIController : ControllerBase
     {
-        protected APIResponse _responce;
+        protected APIResponse _response;
         private readonly IDisciplineRepository _dbDiscipline;
         private readonly IMapper _mapper;
 
@@ -26,25 +28,51 @@ namespace ElectDisciplines_API.Controllers.v1
         {
             _dbDiscipline = dbDiscipline;
             _mapper = mapper;
-            _responce = new();
+            _response = new();
         }
 
         [HttpGet]
-        public async Task<ActionResult<APIResponse>> GetDisciplines()
+        [ResponseCache(CacheProfileName = "Default30")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<APIResponse>> GetDisciplines([FromQuery(Name = "filterRate")] int? rate,
+            [FromQuery] string? search, int pageSize = 0, int pageNumber = 1)
         {
             try
             {
-                IEnumerable<Discipline> disciplineList = await _dbDiscipline.GetAllAsync();
-                _responce.Result = _mapper.Map<List<DisciplineDTO>>(disciplineList);
-                _responce.StatusCode = HttpStatusCode.OK;
-                return Ok(_responce);
+                IEnumerable<Discipline> disciplineList;
+
+                if (rate > 0)
+                {
+                    disciplineList = await _dbDiscipline.GetAllAsync(u => u.Rate == rate, pageSize: pageSize,
+                        pageNumber: pageNumber);
+                }
+                else
+                {
+                    disciplineList = await _dbDiscipline.GetAllAsync(pageSize: pageSize,
+                        pageNumber: pageNumber);
+                }
+                if (!string.IsNullOrEmpty(search))
+                {
+                    disciplineList = disciplineList.Where(u => u.Name.ToLower().Contains(search));
+                }
+                Pagination pagination = new() { PageNumber = pageNumber, PageSize = pageSize };
+
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+                _response.Result = _mapper.Map<List<DisciplineDTO>>(disciplineList);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
+
             }
             catch (Exception ex)
             {
-                _responce.IsSuccess = false;
-                _responce.ErrorMessages = new List<string>() { ex.ToString() };
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
             }
-            return _responce;
+            return _response;
+
         }
 
         [HttpGet("{id:int}", Name = "GetDiscipline")]
@@ -56,22 +84,28 @@ namespace ElectDisciplines_API.Controllers.v1
         {
             try
             {
-                _responce.StatusCode = HttpStatusCode.BadRequest;
-                if (id == 0) { return BadRequest(_responce); }
-
+                if (id == 0)
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
                 var discipline = await _dbDiscipline.GetAsync(u => u.Id == id);
-
-                if (discipline == null) { _responce.StatusCode = HttpStatusCode.NotFound; return NotFound(_responce); }
-                _responce.Result = _mapper.Map<DisciplineDTO>(discipline);
-                _responce.StatusCode = HttpStatusCode.OK;
-                return Ok(_responce);
+                if (discipline == null)
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    return NotFound(_response);
+                }
+                _response.Result = _mapper.Map<DisciplineDTO>(discipline);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
             }
             catch (Exception ex)
             {
-                _responce.IsSuccess = false;
-                _responce.ErrorMessages = new List<string>() { ex.ToString() };
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
             }
-            return _responce;
+            return _response;
         }
 
         [HttpPost]
@@ -95,16 +129,16 @@ namespace ElectDisciplines_API.Controllers.v1
 
 
                 await _dbDiscipline.CreateAsync(discipline);
-                _responce.Result = _mapper.Map<DisciplineDTO>(discipline);
-                _responce.StatusCode = HttpStatusCode.Created;
-                return CreatedAtRoute("GetDiscipline", new { id = discipline.Id }, _responce);
+                _response.Result = _mapper.Map<DisciplineDTO>(discipline);
+                _response.StatusCode = HttpStatusCode.Created;
+                return CreatedAtRoute("GetDiscipline", new { id = discipline.Id }, _response);
             }
             catch (Exception ex)
             {
-                _responce.IsSuccess = false;
-                _responce.ErrorMessages = new List<string>() { ex.ToString() };
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
-            return _responce;
+            return _response;
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -123,16 +157,16 @@ namespace ElectDisciplines_API.Controllers.v1
 
                 await _dbDiscipline.RemoveAsync(discipline);
 
-                _responce.StatusCode = HttpStatusCode.NoContent;
-                _responce.IsSuccess = true;
-                return Ok(_responce);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+                return Ok(_response);
             }
             catch (Exception ex)
             {
-                _responce.IsSuccess = false;
-                _responce.ErrorMessages = new List<string>() { ex.ToString() };
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
-            return _responce;
+            return _response;
         }
         [Authorize(Roles = "admin")]
         [HttpPut("{id:int}", Name = "UpdateDiscipline")]
@@ -146,16 +180,16 @@ namespace ElectDisciplines_API.Controllers.v1
 
                 Discipline model = _mapper.Map<Discipline>(updateDTO);
                 await _dbDiscipline.UpdateAsync(model);
-                _responce.StatusCode = HttpStatusCode.NoContent;
-                _responce.IsSuccess = true;
-                return Ok(_responce);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+                return Ok(_response);
             }
             catch (Exception ex)
             {
-                _responce.IsSuccess = false;
-                _responce.ErrorMessages = new List<string>() { ex.ToString() };
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
-            return _responce;
+            return _response;
         }
 
         [HttpPatch("{id:int}", Name = "UpdatePartialDiscipline")]
