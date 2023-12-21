@@ -11,25 +11,25 @@ namespace ElectDiscipline_Web.Controllers
 {
     public class HomeController : Controller
     {
-		private readonly IDisciplineService _disciplineService;
-		private readonly IMapper _mapper;
-		public HomeController(IDisciplineService disciplineService, IMapper mapper)
-		{
-			_disciplineService = disciplineService;
-			_mapper = mapper;
-		}
+        private readonly IDisciplineService _disciplineService;
+        private readonly IMapper _mapper;
+        public HomeController(IDisciplineService disciplineService, IMapper mapper)
+        {
+            _disciplineService = disciplineService;
+            _mapper = mapper;
+        }
 
-		public async Task<IActionResult> Index()
-		{
-			List<DisciplineDTO> list = new();
+        public async Task<IActionResult> Index()
+        {
+            List<DisciplineDTO> list = new();
 
-			var response = await _disciplineService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
-			if (response != null && response.IsSuccess)
-			{
-				list = JsonConvert.DeserializeObject<List<DisciplineDTO>>(Convert.ToString(response.Result));
-			}
-			return View(list);
-		}
+            var response = await _disciplineService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+            if (response != null && response.IsSuccess)
+            {
+                list = JsonConvert.DeserializeObject<List<DisciplineDTO>>(Convert.ToString(response.Result));
+            }
+            return View(list);
+        }
 
     }
 }

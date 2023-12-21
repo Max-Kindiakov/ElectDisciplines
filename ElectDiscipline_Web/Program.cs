@@ -1,7 +1,8 @@
-using ElectDiscipline_Web;
-using ElectDiscipline_Web.Services;
-using ElectDiscipline_Web.Services.IServices;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
+using ElectDiscipline_Web.Services.IServices;
+using ElectDiscipline_Web.Services;
+using ElectDiscipline_Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
-builder.Services.AddHttpClient<IDisciplineService,DisciplineService>();
+
+builder.Services.AddHttpClient<IDisciplineService, DisciplineService>();
 builder.Services.AddScoped<IDisciplineService, DisciplineService>();
 
 builder.Services.AddHttpClient<IDisciplineNumberService, DisciplineNumberService>();
@@ -17,7 +19,6 @@ builder.Services.AddScoped<IDisciplineNumberService, DisciplineNumberService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddHttpClient<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
               .AddCookie(options =>

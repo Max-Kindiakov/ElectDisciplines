@@ -23,13 +23,13 @@ namespace ElectDisciplines_API.Controllers.v1
         protected APIResponse _response;
         private readonly IDisciplineRepository _dbDiscipline;
         private readonly IMapper _mapper;
-
         public DisciplinesAPIController(IDisciplineRepository dbDiscipline, IMapper mapper)
         {
             _dbDiscipline = dbDiscipline;
             _mapper = mapper;
             _response = new();
         }
+
 
         [HttpGet]
         [ResponseCache(CacheProfileName = "Default30")]
@@ -41,6 +41,7 @@ namespace ElectDisciplines_API.Controllers.v1
         {
             try
             {
+
                 IEnumerable<Discipline> disciplineList;
 
                 if (rate > 0)
@@ -76,10 +77,11 @@ namespace ElectDisciplines_API.Controllers.v1
         }
 
         [HttpGet("{id:int}", Name = "GetDiscipline")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(200, Type = typeof(DisciplineDTO))]
         public async Task<ActionResult<APIResponse>> GetDiscipline(int id)
         {
             try
@@ -117,17 +119,21 @@ namespace ElectDisciplines_API.Controllers.v1
         {
             try
             {
-                //if(!ModelState.IsValid) { return BadRequest(ModelState); }
+                
                 if (await _dbDiscipline.GetAsync(u => u.Name.ToLower() == createDTO.Name.ToLower()) != null)
                 {
-                    ModelState.AddModelError("CustomError", "Така дисциплiна вже iснує!");
+                    ModelState.AddModelError("ErrorMessages", "Discipline already Exists!");
                     return BadRequest(ModelState);
                 }
-                if (createDTO == null) { return BadRequest(createDTO); }
-                //if(disciplineDTO.Id > 0) {return StatusCode(StatusCodes.Status500InternalServerError); } //якщо створюємо з айді яке більше нуля, то ми нас правді не створюємо
+
+                if (createDTO == null)
+                {
+                    return BadRequest(createDTO);
+                }
+                
                 Discipline discipline = _mapper.Map<Discipline>(createDTO);
 
-
+             
                 await _dbDiscipline.CreateAsync(discipline);
                 _response.Result = _mapper.Map<DisciplineDTO>(discipline);
                 _response.StatusCode = HttpStatusCode.Created;
@@ -136,12 +142,15 @@ namespace ElectDisciplines_API.Controllers.v1
             catch (Exception ex)
             {
                 _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string>() { ex.ToString() };
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
             }
             return _response;
         }
 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("{id:int}", Name = "DeleteDiscipline")]
@@ -150,13 +159,16 @@ namespace ElectDisciplines_API.Controllers.v1
         {
             try
             {
-                if (id == 0) { return BadRequest(); }
-
+                if (id == 0)
+                {
+                    return BadRequest();
+                }
                 var discipline = await _dbDiscipline.GetAsync(u => u.Id == id);
-                if (discipline == null) { return NotFound(); }
-
+                if (discipline == null)
+                {
+                    return NotFound();
+                }
                 await _dbDiscipline.RemoveAsync(discipline);
-
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -164,7 +176,8 @@ namespace ElectDisciplines_API.Controllers.v1
             catch (Exception ex)
             {
                 _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string>() { ex.ToString() };
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
             }
             return _response;
         }
@@ -176,9 +189,13 @@ namespace ElectDisciplines_API.Controllers.v1
         {
             try
             {
-                if (updateDTO == null || id != updateDTO.Id) { return BadRequest(); }
+                if (updateDTO == null || id != updateDTO.Id)
+                {
+                    return BadRequest();
+                }
 
                 Discipline model = _mapper.Map<Discipline>(updateDTO);
+
                 await _dbDiscipline.UpdateAsync(model);
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
@@ -187,7 +204,8 @@ namespace ElectDisciplines_API.Controllers.v1
             catch (Exception ex)
             {
                 _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string>() { ex.ToString() };
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
             }
             return _response;
         }
@@ -197,19 +215,28 @@ namespace ElectDisciplines_API.Controllers.v1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdatePartialDiscipline(int id, JsonPatchDocument<DisciplineUpdateDTO> patchDTO)
         {
-            if (patchDTO == null || id == 0) { return BadRequest(); }
+            if (patchDTO == null || id == 0)
+            {
+                return BadRequest();
+            }
             var discipline = await _dbDiscipline.GetAsync(u => u.Id == id, tracked: false);
 
-            DisciplineUpdateDTO disciplineDTO = _mapper.Map<DisciplineUpdateDTO>(discipline);
+           DisciplineUpdateDTO disciplineDTO = _mapper.Map<DisciplineUpdateDTO>(discipline);
 
 
-
-            if (discipline == null) { return BadRequest(); }
+            if (discipline == null)
+            {
+                return BadRequest();
+            }
             patchDTO.ApplyTo(disciplineDTO, ModelState);
             Discipline model = _mapper.Map<Discipline>(disciplineDTO);
 
             await _dbDiscipline.UpdateAsync(model);
-            if (!ModelState.IsValid) { return BadRequest(ModelState); }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             return NoContent();
         }
 

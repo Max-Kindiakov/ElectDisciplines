@@ -27,7 +27,7 @@ namespace ElectDisciplines_API.Controllers
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Ім'я користувача або пароль неправильні");
+                _response.ErrorMessages.Add("Username or password is incorrect");
                 return BadRequest(_response);
             }
             _response.StatusCode = HttpStatusCode.OK;
@@ -44,7 +44,7 @@ namespace ElectDisciplines_API.Controllers
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Ім'я користувача вже існує");
+                _response.ErrorMessages.Add("Username already exists");
                 return BadRequest(_response);
             }
 
@@ -53,7 +53,7 @@ namespace ElectDisciplines_API.Controllers
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Помилка при реєстрації");
+                _response.ErrorMessages.Add("Error while registering");
                 return BadRequest(_response);
             }
             _response.StatusCode = HttpStatusCode.OK;
