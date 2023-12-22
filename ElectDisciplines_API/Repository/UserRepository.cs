@@ -99,10 +99,11 @@ namespace ElectDisciplines_API.Repository
                 {
                     if (!_roleManager.RoleExistsAsync("admin").GetAwaiter().GetResult())
                     {
-                        await _roleManager.CreateAsync(new IdentityRole("admin"));
+                        //await _roleManager.CreateAsync(new IdentityRole("admin"));
                         await _roleManager.CreateAsync(new IdentityRole("customer"));
                     }
-                    await _userManager.AddToRoleAsync(user, "admin");
+                    //await _userManager.AddToRoleAsync(user, "admin");
+                    await _userManager.AddToRoleAsync(user, "customer");
                     var userToReturn = _db.ApplicationUsers
                         .FirstOrDefault(u => u.UserName == registerationRequestDTO.UserName);
                     return _mapper.Map<UserDTO>(userToReturn);

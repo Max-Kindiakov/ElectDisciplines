@@ -37,7 +37,7 @@ namespace ElectDisciplines_API.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetDisciplines([FromQuery(Name = "filterRate")] int? rate,
-            [FromQuery] string? search, int pageSize = 0, int pageNumber = 1)
+     [FromQuery] string? search, int pageSize = 0, int pageNumber = 1)
         {
             try
             {
@@ -75,6 +75,7 @@ namespace ElectDisciplines_API.Controllers.v1
             return _response;
 
         }
+
 
         [HttpGet("{id:int}", Name = "GetDiscipline")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

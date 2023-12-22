@@ -4,6 +4,7 @@ using ElectDisciplines_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ElectDisciplinesAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231221163906_TestMigr")]
+    partial class TestMigr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,7 +135,7 @@ namespace ElectDisciplinesAPI.Migrations
                         {
                             Id = 1,
                             Course = 2,
-                            CreatedDate = new DateTime(2023, 12, 21, 18, 49, 0, 487, DateTimeKind.Local).AddTicks(4851),
+                            CreatedDate = new DateTime(2023, 12, 21, 18, 39, 6, 39, DateTimeKind.Local).AddTicks(898),
                             Description = "",
                             ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
                             Name = "Практикум з Linux",
@@ -144,7 +147,7 @@ namespace ElectDisciplinesAPI.Migrations
                         {
                             Id = 2,
                             Course = 2,
-                            CreatedDate = new DateTime(2023, 12, 21, 18, 49, 0, 487, DateTimeKind.Local).AddTicks(4908),
+                            CreatedDate = new DateTime(2023, 12, 21, 18, 39, 6, 39, DateTimeKind.Local).AddTicks(951),
                             Description = "Предмет навчальної дисципліни – закономірності стосунків та поведінки людей у конфліктних ситуаціях, причини виникнення конфліктів і методи їх подолання.",
                             ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
                             Name = "Психологія конфлікту",
@@ -156,7 +159,7 @@ namespace ElectDisciplinesAPI.Migrations
                         {
                             Id = 3,
                             Course = 2,
-                            CreatedDate = new DateTime(2023, 12, 21, 18, 49, 0, 487, DateTimeKind.Local).AddTicks(4912),
+                            CreatedDate = new DateTime(2023, 12, 21, 18, 39, 6, 39, DateTimeKind.Local).AddTicks(955),
                             Description = "футбол, волейбол, баксетбол, теніс, настільний теніс",
                             ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
                             Name = "Ігрові види спорту",
@@ -168,7 +171,7 @@ namespace ElectDisciplinesAPI.Migrations
                         {
                             Id = 4,
                             Course = 3,
-                            CreatedDate = new DateTime(2023, 12, 21, 18, 49, 0, 487, DateTimeKind.Local).AddTicks(4916),
+                            CreatedDate = new DateTime(2023, 12, 21, 18, 39, 6, 39, DateTimeKind.Local).AddTicks(959),
                             Description = "Даний курс орієнтований на вивчення Java як людьми з мінімальним рівнем знання програмування так і людьми, які хочуть покращити свої знання з певних нюансів мови. Після його завершення ви зможете писати програми на Java, і будете мати основу, необхідну для подальшого поглиблення своїх знань та навичок в програмуванні.",
                             ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
                             Name = "Мова програмування Java",
@@ -180,7 +183,7 @@ namespace ElectDisciplinesAPI.Migrations
                         {
                             Id = 5,
                             Course = 3,
-                            CreatedDate = new DateTime(2023, 12, 21, 18, 49, 0, 487, DateTimeKind.Local).AddTicks(4920),
+                            CreatedDate = new DateTime(2023, 12, 21, 18, 39, 6, 39, DateTimeKind.Local).AddTicks(963),
                             Description = "Навчальна та робоча програми дисципліни, Силабус, РСО, контрольні завдання, методичні рекомендації до виконання комп’ютерного практикуму. Навчальний посібник «CAD-системи та мультимедіа».   ",
                             ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
                             Name = "Комп’ютерна графіка та обробка зображень",
@@ -192,7 +195,7 @@ namespace ElectDisciplinesAPI.Migrations
                         {
                             Id = 6,
                             Course = 3,
-                            CreatedDate = new DateTime(2023, 12, 21, 18, 49, 0, 487, DateTimeKind.Local).AddTicks(4924),
+                            CreatedDate = new DateTime(2023, 12, 21, 18, 39, 6, 39, DateTimeKind.Local).AddTicks(968),
                             Description = "Працювати з системою, використовуючи командний рядок Shell;  управляти файлами, каталогами, правами доступу, користувачами та групами, процесами, журналюванням  операцій в Linux; конфігурувати систему через налаштування пакетів, апаратного забезпечення, файлових систем, графічного середовища, мереж",
                             ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
                             Name = "Linux",
@@ -204,7 +207,7 @@ namespace ElectDisciplinesAPI.Migrations
                         {
                             Id = 7,
                             Course = 3,
-                            CreatedDate = new DateTime(2023, 12, 21, 18, 49, 0, 487, DateTimeKind.Local).AddTicks(4928),
+                            CreatedDate = new DateTime(2023, 12, 21, 18, 39, 6, 39, DateTimeKind.Local).AddTicks(972),
                             Description = "Програма курсу передбачає:\r\n\r\nвивчення архітектури платформи Android\r\nрозробку нативних додатків на мові Java\r\nроботу з файловою системою та базами даних SQLite\r\nдоступ до глобальної мережі та розробки веб-додатку\r\nопанування роботи з датчиками та мультимедіа",
                             ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
                             Name = "Розробка мобільних застосувань під Android",
@@ -216,7 +219,7 @@ namespace ElectDisciplinesAPI.Migrations
                         {
                             Id = 8,
                             Course = 3,
-                            CreatedDate = new DateTime(2023, 12, 21, 18, 49, 0, 487, DateTimeKind.Local).AddTicks(4932),
+                            CreatedDate = new DateTime(2023, 12, 21, 18, 39, 6, 39, DateTimeKind.Local).AddTicks(976),
                             Description = "",
                             ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
                             Name = "Робота з даними в хмарних середовищах",
@@ -228,7 +231,7 @@ namespace ElectDisciplinesAPI.Migrations
                         {
                             Id = 9,
                             Course = 3,
-                            CreatedDate = new DateTime(2023, 12, 21, 18, 49, 0, 487, DateTimeKind.Local).AddTicks(4936),
+                            CreatedDate = new DateTime(2023, 12, 21, 18, 39, 6, 39, DateTimeKind.Local).AddTicks(980),
                             Description = "розробка систем управління автономними мобільними роботами та дронами;\r\nвирішення задач навігації та локалізації для інших безпілотних систем.",
                             ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
                             Name = "Бази даних безпілотних систем та автономної робототехніки",
@@ -240,7 +243,7 @@ namespace ElectDisciplinesAPI.Migrations
                         {
                             Id = 10,
                             Course = 3,
-                            CreatedDate = new DateTime(2023, 12, 21, 18, 49, 0, 487, DateTimeKind.Local).AddTicks(4940),
+                            CreatedDate = new DateTime(2023, 12, 21, 18, 39, 6, 39, DateTimeKind.Local).AddTicks(984),
                             Description = "",
                             ImageUrl = "https://my.kpi.ua/static/images/logo_fiot.png",
                             Name = "Професійне використання SQL та PL/SQL на прикладі РСУБД Oracle 11g",
